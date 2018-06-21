@@ -6,10 +6,15 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import com.xfinity.R
 import com.xfinity.dagger.Injectable
 import com.xfinity.repository.CharacterRepository
+import com.xfinity.util.Validation
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -24,6 +29,10 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
 
     @Inject
     lateinit var navigationController: NavigationController
+    @Inject
+    lateinit var navActivityUIController: NavActivityUIController
+    @Inject
+    lateinit var validation: Validation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +49,46 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
         if (savedInstanceState == null) {
             navigationController.getListFragment()
         }
+
+        navActivityUIController.setEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = v.text.toString().trim()
+                val validationMsg = validation.validSearchQueryOrErrorMsg(query)
+
+                if (!validationMsg.isEmpty()) {
+                    navActivityUIController.snackBarMessage(validationMsg)
+                    return@OnEditorActionListener false
+                }
+
+                navigationController.getListFragment(CharacterRepository.FILTER_TYPE_SEARCH, query)
+
+                return@OnEditorActionListener true
+            }
+
+            return@OnEditorActionListener false
+        })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_nav_drawer_activity_tolbar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> drawer_layout.openDrawer(GravityCompat.START)
+            R.id.menu_search -> {
+                if (searchBar.visibility == View.GONE) {
+                    searchBar.visibility = View.VISIBLE
+                    searchBar.requestFocus()
+                } else {
+                    searchBar.visibility = View.GONE
+                    searchBar.clearFocus()
+                }
+            }
+        }
+        return true
     }
 
     override fun onBackPressed() {

@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val appDatabase: AppDatabase) {
 
-    fun getCharactersObservable(filterType: String): Observable<ApiResource<List<CharacterEntity>>>  {
+    fun getCharactersObservable(filterType: String, searchQuery: String = ""): Observable<ApiResource<List<CharacterEntity>>>  {
 
         return object: BaseNetworkResource<CharactersResponse, List<CharacterEntity>>(appDatabase) {
 
@@ -24,6 +24,10 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
                 return when (filterType) {
                     FILTER_TYPE_NONE -> appDatabase.characterDao().getCharactersFlowable()
                     FILTER_TYPE_FAVORITES -> appDatabase.characterDao().getFavoriteCharactersFlowable()
+                    FILTER_TYPE_SEARCH -> {
+                        if (searchQuery.isEmpty()) throw IllegalArgumentException("Character name search query cannot be empty")
+                        appDatabase.characterDao().getSerachCharactersFlowable(searchQuery)
+                    }
                     else -> appDatabase.characterDao().getCharactersFlowable()
                 }
             }
@@ -48,5 +52,6 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
     companion object {
         const val FILTER_TYPE_NONE = "no filter on character list"
         const val FILTER_TYPE_FAVORITES = "filter on favorite characters"
+        const val FILTER_TYPE_SEARCH = "filter by search query"
     }
 }

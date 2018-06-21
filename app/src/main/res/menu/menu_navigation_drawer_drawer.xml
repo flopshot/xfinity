@@ -7,11 +7,11 @@
         <item
             android:id="@+id/menu_all_characters"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="All Characters" />
+            android:title="@string/all_characters" />
         <item
             android:id="@+id/menu_favorites"
             android:icon="@drawable/ic_star"
-            android:title="Favorites" />
+            android:title="@string/favorites" />
     </group>
 
 </menu>

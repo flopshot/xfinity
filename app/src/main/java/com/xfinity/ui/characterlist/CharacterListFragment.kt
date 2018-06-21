@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.xfinity.R
 import com.xfinity.api.Status
 import com.xfinity.dagger.Injectable
+import com.xfinity.repository.CharacterRepository.Companion.FILTER_TYPE_SEARCH
 import com.xfinity.ui.clickhandlers.CharacterIdClickListener
 import com.xfinity.ui.navigation.NavActivityUIController
 import com.xfinity.ui.navigation.NavigationController
@@ -33,6 +34,7 @@ class CharacterListFragment: Fragment(), Injectable {
     lateinit var characterListAdapter: CharacterListAdapter
 
     lateinit var filterType: String
+    lateinit var searchQuery: String
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +60,8 @@ class CharacterListFragment: Fragment(), Injectable {
 
         filterType = arguments?.getString(CharacterListFragment.FILTER_KEY)
                 ?: throw IllegalStateException("No Filter Type Specified")
+
+        searchQuery = arguments?.getString(SEARCH_QUERY_KEY, "")?:""
 
         viewModel.charactersLiveData.observe(this, Observer { charactersResource ->
             if (charactersResource != null) {
@@ -88,18 +92,23 @@ class CharacterListFragment: Fragment(), Injectable {
         })
 
         if (savedInstanceState == null) {
-            viewModel.initCharacters(filterType)
+            viewModel.initCharacters(filterType, searchQuery)
         }
     }
 
     companion object {
         const val FILTER_KEY = "filterKey"
+        const val SEARCH_QUERY_KEY = "searchquerykey"
 
-        operator fun invoke(filterType: String): CharacterListFragment {
+        operator fun invoke(filterType: String, searchQuery: String): CharacterListFragment {
             val f = CharacterListFragment()
 
             val bundle = Bundle()
             bundle.putString(CharacterListFragment.FILTER_KEY, filterType)
+
+            if (filterType == FILTER_TYPE_SEARCH) {
+                bundle.putString(SEARCH_QUERY_KEY, searchQuery)
+            }
             f.arguments = bundle
 
             return f

@@ -16,6 +16,9 @@ interface CharacterDao {
     @Query("SELECT * FROM CharacterEntity WHERE description = :description")
     fun getCharacterFlowable(description: String): Flowable<CharacterEntity>
 
+    @Query("SELECT * FROM CharacterEntity WHERE name LIKE '%' || :query || '%'")
+    fun getSerachCharactersFlowable(query: String): Flowable<List<CharacterEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(characters: List<CharacterEntity>)
 

@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import java.util.*
 import java.util.concurrent.ThreadPoolExecutor
 
-
 abstract class AsyncDiffUtilAdapter<VH : RecyclerView.ViewHolder, ItemType> : RecyclerView.Adapter<VH>() {
 
     private val pendingItems: Queue<MutableList<ItemType>> = ArrayDeque()

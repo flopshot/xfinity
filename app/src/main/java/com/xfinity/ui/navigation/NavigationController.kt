@@ -18,8 +18,8 @@ class NavigationController @Inject constructor(private val activity: NavigationD
         navigateToFragment(characterDetailFragment)
     }
 
-    fun getListFragment(filterType: String = "") {
-        val characterListFragment = CharacterListFragment(filterType)
+    fun getListFragment(filterType: String = "", searchQuery: String = "") {
+        val characterListFragment = CharacterListFragment(filterType, searchQuery)
         navigateToFragment(characterListFragment)
     }
 

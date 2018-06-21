@@ -14,7 +14,7 @@ class CharacterListViewModel @Inject constructor(private val characterRepo: Char
 
     private var charactersDisposable: Disposable? = null
 
-    fun initCharacters(filterType: String) {
+    fun initCharacters(filterType: String, searchQuery: String = "") {
         if (charactersDisposable != null) {
             charactersDisposable!!.dispose()
         }
@@ -22,7 +22,7 @@ class CharacterListViewModel @Inject constructor(private val characterRepo: Char
         charactersDisposable = this.convertObservableToLiveData(
                 charactersDisposable,
                 charactersLiveData,
-                characterRepo.getCharactersObservable(filterType)
+                characterRepo.getCharactersObservable(filterType, searchQuery)
         )
     }
 
