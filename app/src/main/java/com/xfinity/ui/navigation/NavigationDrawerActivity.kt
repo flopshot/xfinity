@@ -34,6 +34,8 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
     @Inject
     lateinit var validation: Validation
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_drawer)
@@ -48,9 +50,11 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
 
         if (savedInstanceState == null) {
             navigationController.getListFragment()
+        } else {
+            searchBar.visibility = savedInstanceState.getInt(SEARCH_FIELD_VISIBLE_KEY)
         }
 
-        navActivityUIController.setEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        navActivityUIController.setEditorActionListener(TextView.OnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = v.text.toString().trim()
                 val validationMsg = validation.validSearchQueryOrErrorMsg(query)
@@ -72,6 +76,9 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_nav_drawer_activity_tolbar, menu)
+        if (searchBar.visibility == View.VISIBLE) {
+            menu.findItem(R.id.menu_search).setIcon(R.drawable.ic_cancel)
+        }
         return true
     }
 
@@ -82,8 +89,11 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
                 if (searchBar.visibility == View.GONE) {
                     searchBar.visibility = View.VISIBLE
                     searchBar.requestFocus()
+                    item.setIcon(R.drawable.ic_cancel)
                 } else {
+                    searchBar.text.clear()
                     searchBar.visibility = View.GONE
+                    item.setIcon(R.drawable.ic_search)
                     searchBar.clearFocus()
                 }
             }
@@ -115,5 +125,15 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return dispatchingAndroidInjector
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putInt(SEARCH_FIELD_VISIBLE_KEY, searchBar.visibility)
+
+        super.onSaveInstanceState(outState)
+    }
+
+    companion object {
+        const val SEARCH_FIELD_VISIBLE_KEY: String = "serachfieldhiddenkey"
     }
 }

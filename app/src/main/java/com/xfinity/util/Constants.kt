@@ -1,5 +1,5 @@
 package com.xfinity.util
 
-object Const {
+object Constants {
     val TABLET_SMALLEST_WIDTH: Int = 720
 }

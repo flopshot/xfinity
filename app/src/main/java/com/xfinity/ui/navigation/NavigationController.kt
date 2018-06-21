@@ -4,13 +4,13 @@ import android.support.v4.app.Fragment
 import com.xfinity.R
 import com.xfinity.ui.characterdetail.CharacterDetailFragment
 import com.xfinity.ui.characterlist.CharacterListFragment
-import com.xfinity.util.Const
+import com.xfinity.util.Constants
 import javax.inject.Inject
 
 class NavigationController @Inject constructor(private val activity: NavigationDrawerActivity) {
 
     private val isTablet: Boolean by lazy {
-        activity.resources.configuration.smallestScreenWidthDp >= Const.TABLET_SMALLEST_WIDTH
+        activity.resources.configuration.smallestScreenWidthDp >= Constants.TABLET_SMALLEST_WIDTH
     }
 
     fun getDetailFragment(description: String) {
