@@ -8,14 +8,13 @@ import com.xfinity.dagger.modules.ApplicationModule
 import com.xfinity.data.DatabaseModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 
 
 @Singleton
 @Component(modules = [ApplicationModule::class, ActivityBuilderModule::class, ApiModule::class,
-                      AndroidSupportInjectionModule::class, DatabaseModule::class])
+                       DatabaseModule::class])
 interface ApplicationComponent {
 
     @Component.Builder

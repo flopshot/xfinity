@@ -13,7 +13,14 @@ data class CharacterResponse(
 
     @WorkerThread
     override fun saveResponseToDb(db: AppDatabase) {
-        val name = description.substring(0, description.indexOf(" -", 0))
+        val name: String
+        val endIndex = description.indexOf(" -", 0)
+
+        name = if (endIndex == -1) {
+            "(No Name)"
+        } else {
+            description.substring(0, endIndex)
+        }
         val isFavorite: Boolean = db.characterDao().getIsFavorite(description)
 
         val entity = CharacterEntity(description = description, pictureUrl = icon.pictureUrl,

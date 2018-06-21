@@ -8,6 +8,6 @@ import retrofit2.http.GET
 
 interface CharacterViewerApi {
 
-    @GET("q=" + BuildConfig.PRODUCT_QUERY_PARAM + "&format=json")
+    @GET("?q=" + BuildConfig.PRODUCT_QUERY_PARAM + "&format=json")
     fun getCharacterList(): Observable<CharactersResponse>
 }

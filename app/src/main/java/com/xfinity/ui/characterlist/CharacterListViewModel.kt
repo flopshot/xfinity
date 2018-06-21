@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class CharacterListViewModel @Inject constructor(private val characterRepo: CharacterRepository): BaseViewModel() {
 
-    val charactersLiveData: MutableLiveData<ApiResource<CharacterEntity>> = MutableLiveData()
+    val charactersLiveData: MutableLiveData<ApiResource<List<CharacterEntity>>> = MutableLiveData()
 
     private var charactersDisposable: Disposable? = null
 

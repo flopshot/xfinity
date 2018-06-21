@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.xfinity.R
 import com.xfinity.ui.characterdetail.CharacterDetailFragment
+import com.xfinity.ui.characterlist.CharacterListFragment
 import com.xfinity.util.Const
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import javax.inject.Inject
@@ -19,12 +20,16 @@ class NavActivityUIController @Inject constructor(private val activity: Navigati
         activity.resources.getString(R.string.character_list_fragment_title)
     }
 
-    fun setActionBarTitle(title: String, fragment: Fragment) {
+    fun setActionBarTitle(title: String = "", fragment: Fragment) {
         if (!isTablet) {
-            activity.actionBar.title = title
+            if (fragment is CharacterListFragment) {
+                activity.supportActionBar?.title = characterListTitle
+            } else {
+                activity.supportActionBar?.title = title
+            }
         } else {
             if (fragment is CharacterDetailFragment) {
-                activity.actionBar.title = "$characterListTitle : $title"
+                activity.supportActionBar?.title = "$characterListTitle : $title"
             }
         }
     }

@@ -32,7 +32,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <include
-            android:id="@+id/content_view"
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?actionBarSize"
@@ -55,7 +55,7 @@
             android:clickable="true"
             android:focusable="true"
             tools:src="@android:drawable/ic_menu_search"
-            app:layout_anchor="@id/content_view"
+            app:layout_anchor="@id/fragment_container"
             app:layout_anchorGravity="bottom|right|end"/>
 
     </android.support.design.widget.CoordinatorLayout>

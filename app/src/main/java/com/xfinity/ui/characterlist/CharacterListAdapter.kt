@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.xfinity.R
 import com.xfinity.data.entities.CharacterEntity
+import com.xfinity.ui.clickhandlers.CharacterIdClickListener
 import com.xfinity.ui.util.AsyncDiffUtilAdapter
 import javax.inject.Inject
-
 
 class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
     : AsyncDiffUtilAdapter<CharacterViewHolder, CharacterEntity>() {
 
-    private var characterList: MutableList<CharacterEntity> = mutableListOf()
+    private var characterList: ArrayList<CharacterEntity> = arrayListOf()
+    private var characterClickListener: CharacterIdClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder
             = CharacterViewHolder (
@@ -26,8 +27,14 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
         return characterList.size
     }
 
-    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int)
-            = holder.bind(characterList[position], picasso)
+    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
+        holder.bind(characterList[position], picasso)
+        if (characterClickListener != null) {
+            holder.itemView.setOnClickListener({ v ->
+                characterClickListener!!.onClick(characterList[position].description)
+            })
+        }
+    }
 
     override fun itemsDiffUtilCallback(oldItems: List<CharacterEntity>, newItems: List<CharacterEntity>): DiffUtil.Callback {
 
@@ -37,7 +44,7 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
             override fun getNewListSize(): Int = newItems.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean
-                = oldItems[oldItemPosition - 1].description == newItems[newItemPosition - 1].description
+                = oldItems[oldItemPosition].description == newItems[newItemPosition].description
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean
                 = oldItems[oldItemPosition].name == newItems[newItemPosition].name
@@ -46,12 +53,16 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
         }
     }
 
-    fun setCharacterList(newCharacterList: MutableList<CharacterEntity>) {
+    fun setCharacterList(newCharacterList: ArrayList<CharacterEntity>) {
         if (characterList.size == 0) {
-            characterList = newCharacterList
+            characterList.addAll(newCharacterList)
             notifyItemRangeInserted(0, newCharacterList.size - 1)
         } else {
             this.updateItems(newCharacterList, characterList)
         }
+    }
+
+    fun setCharacterClickListener(characterClickListener: CharacterIdClickListener?) {
+        this.characterClickListener = characterClickListener
     }
 }

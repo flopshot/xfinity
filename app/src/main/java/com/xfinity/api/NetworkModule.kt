@@ -25,7 +25,7 @@ class NetworkModule {
         get() {
             val hli = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { message -> Timber.i(message) }
             )
-            return hli.setLevel(HttpLoggingInterceptor.Level.BASIC)
+            return hli.setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
     @Singleton

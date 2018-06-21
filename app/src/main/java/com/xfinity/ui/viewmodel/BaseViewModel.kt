@@ -6,10 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-
-
-
-
 abstract class BaseViewModel : ViewModel() {
 
     protected val disposables = CompositeDisposable()

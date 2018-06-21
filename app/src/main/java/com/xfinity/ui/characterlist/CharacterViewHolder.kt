@@ -1,8 +1,10 @@
 package com.xfinity.ui.characterlist
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.squareup.picasso.Picasso
+import com.xfinity.R
 import com.xfinity.data.entities.CharacterEntity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.row_character.*
@@ -12,10 +14,15 @@ class CharacterViewHolder(override val containerView: View): RecyclerView.ViewHo
 
     fun bind(character: CharacterEntity, picasso: Picasso) {
         character_name.text = character.name
-        picasso.load(character.pictureUrl)
-                .centerCrop()
-                .resize(100,100)
-                .into(character_picture)
-
+        if (character.pictureUrl.trim() == "") {
+            character_picture.setImageDrawable(ContextCompat.getDrawable(containerView.context, R.drawable.placeholder))
+        } else{
+            character_picture.setImageDrawable(null)
+            picasso.load(character.pictureUrl)
+                    .centerInside()
+                    .resize(200,200)
+                    .placeholder(R.drawable.placeholder)
+                    .into(character_picture)
+        }
     }
 }

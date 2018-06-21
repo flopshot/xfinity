@@ -1,5 +1,6 @@
 package com.xfinity.ui.characterlist
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,8 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.xfinity.R
+import com.xfinity.api.Status
 import com.xfinity.dagger.Injectable
 import com.xfinity.ui.characterdetail.CharacterDetailFragment
+import com.xfinity.ui.clickhandlers.CharacterIdClickListener
+import com.xfinity.ui.navigation.NavActivityUIController
+import com.xfinity.ui.navigation.NavigationController
+import kotlinx.android.synthetic.main.fragment_character_list.*
 import javax.inject.Inject
 
 class CharacterListFragment: Fragment(), Injectable {
@@ -20,13 +26,56 @@ class CharacterListFragment: Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var navActivityUIController: NavActivityUIController
+    @Inject
+    lateinit var navigationController: NavigationController
+    @Inject
+    lateinit var characterListAdapter: CharacterListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
             = inflater.inflate(R.layout.fragment_character_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //TODO
+
+        characterRecyclerView.adapter = characterListAdapter
+
+        navActivityUIController.setActionBarTitle(fragment = this)
+
+        characterListAdapter.setCharacterClickListener(object : CharacterIdClickListener {
+            override fun onClick(description: String) {
+                navigationController.getDetailFragment(description)
+            }
+        })
+
+        viewModel.charactersLiveData.observe(this, Observer { charactersResource ->
+            if (charactersResource != null) {
+                when (charactersResource.status) {
+                    Status.LOADING -> {
+                        navActivityUIController.showLoadingBar()
+                        if (charactersResource.data != null) {
+                            characterListAdapter.setCharacterList(ArrayList(charactersResource.data))
+                        }
+                    }
+                    Status.SUCCESS -> {
+                        navActivityUIController.hideLoadingBar()
+                        if (charactersResource.data != null) {
+                            characterListAdapter.setCharacterList(ArrayList(charactersResource.data))
+                        }
+                    }
+                    Status.ERROR -> {
+                        navActivityUIController.hideLoadingBar()
+                        if (charactersResource.data != null) {
+                            characterListAdapter.setCharacterList(ArrayList(charactersResource.data))
+                        }
+                        if (charactersResource.message != null) {
+                            navActivityUIController.snackBarMessage(charactersResource.message)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     companion object {
