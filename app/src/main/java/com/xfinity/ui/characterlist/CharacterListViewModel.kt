@@ -19,7 +19,11 @@ class CharacterListViewModel @Inject constructor(private val characterRepo: Char
             charactersDisposable!!.dispose()
         }
 
-        charactersDisposable = this.convertObservableToLiveData(charactersDisposable, charactersLiveData, characterRepo.getCharactersObservable(filterType))
+        charactersDisposable = this.convertObservableToLiveData(
+                charactersDisposable,
+                charactersLiveData,
+                characterRepo.getCharactersObservable(filterType)
+        )
     }
 
 }

@@ -19,6 +19,7 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
         return object: BaseNetworkResource<CharactersResponse, List<CharacterEntity>>(appDatabase) {
 
             override fun createCall(): Observable<CharactersResponse> = api.getCharacterList()
+
             override fun loadFromDb(): Flowable<List<CharacterEntity>> {
                 return when (filterType) {
                     FILTER_TYPE_NONE -> appDatabase.characterDao().getCharactersFlowable()
@@ -26,6 +27,7 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
                     else -> appDatabase.characterDao().getCharactersFlowable()
                 }
             }
+
             override fun shouldFetch(): Boolean = true
 
         }.asObservable()
@@ -36,14 +38,15 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
 
     fun setCharacterFavoriteStatus(character: CharacterEntity, favorite: Boolean): Observable<ApiResource<CharacterEntity>> {
         character.isFavorite = favorite
+        val characterCopy = character.copy()
         AsyncTask.execute({
-            appDatabase.characterDao().update(character)
+            appDatabase.characterDao().update(characterCopy)
         })
         return Observable.just(ApiResource.success(character))
     }
 
     companion object {
-        val FILTER_TYPE_NONE = "no filter on character list"
-        val FILTER_TYPE_FAVORITES = "filter on favorite characters"
+        const val FILTER_TYPE_NONE = "no filter on character list"
+        const val FILTER_TYPE_FAVORITES = "filter on favorite characters"
     }
 }

@@ -56,7 +56,7 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
     fun setCharacterList(newCharacterList: ArrayList<CharacterEntity>) {
         if (characterList.size == 0) {
             characterList.addAll(newCharacterList)
-            notifyItemRangeInserted(0, newCharacterList.size - 1)
+            notifyItemRangeInserted(0, newCharacterList.size)
         } else {
             this.updateItems(newCharacterList, characterList)
         }

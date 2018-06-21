@@ -20,9 +20,8 @@ abstract class BaseViewModel : ViewModel() {
         @Suppress("UNCHECKED_CAST")
         val returnDisposable
                 = observable
-                    .subscribe(
-                        { mutableLiveData.postValue(it as T) },
-                        { t -> throw Throwable(t as Throwable) }
+                    .subscribe({ mutableLiveData.postValue(it as T) },
+                               { t -> throw Throwable(t as Throwable) }
                     )
 
         disposables.add(returnDisposable)

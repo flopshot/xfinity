@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.xfinity.R
 import com.xfinity.api.Status
 import com.xfinity.dagger.Injectable
-import com.xfinity.ui.characterdetail.CharacterDetailFragment
 import com.xfinity.ui.clickhandlers.CharacterIdClickListener
 import com.xfinity.ui.navigation.NavActivityUIController
 import com.xfinity.ui.navigation.NavigationController
@@ -52,6 +51,13 @@ class CharacterListFragment: Fragment(), Injectable {
                 navigationController.getDetailFragment(description)
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        filterType = arguments?.getString(CharacterListFragment.FILTER_KEY)
+                ?: throw IllegalStateException("No Filter Type Specified")
 
         viewModel.charactersLiveData.observe(this, Observer { charactersResource ->
             if (charactersResource != null) {
@@ -80,22 +86,17 @@ class CharacterListFragment: Fragment(), Injectable {
                 }
             }
         })
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        filterType = arguments?.getString(CharacterListFragment.FILTER_KEY)
-                ?: throw IllegalStateException("No Filter Type Specified")
-
-        viewModel.initCharacters(filterType)
+        if (savedInstanceState == null) {
+            viewModel.initCharacters(filterType)
+        }
     }
 
     companion object {
         const val FILTER_KEY = "filterKey"
 
-        operator fun invoke(filterType: String): CharacterDetailFragment {
-            val f = CharacterDetailFragment()
+        operator fun invoke(filterType: String): CharacterListFragment {
+            val f = CharacterListFragment()
 
             val bundle = Bundle()
             bundle.putString(CharacterListFragment.FILTER_KEY, filterType)

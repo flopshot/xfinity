@@ -8,7 +8,8 @@ import com.xfinity.ui.viewmodel.BaseViewModel
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class CharacterDetailViewModel @Inject constructor(private val characterRepo: CharacterRepository): BaseViewModel() {
+class CharacterDetailViewModel @Inject constructor(private val characterRepo: CharacterRepository)
+    : BaseViewModel() {
 
     val characterLiveData: MutableLiveData<CharacterEntity> = MutableLiveData()
     val favoriteLiveData: MutableLiveData<ApiResource<CharacterEntity>> = MutableLiveData()
@@ -21,7 +22,11 @@ class CharacterDetailViewModel @Inject constructor(private val characterRepo: Ch
             characterDisposable!!.dispose()
         }
 
-        characterDisposable = this.convertObservableToLiveData(characterDisposable, characterLiveData, characterRepo.getCharacterObservable(id))
+        characterDisposable = this.convertObservableToLiveData(
+                characterDisposable,
+                characterLiveData,
+                characterRepo.getCharacterObservable(id)
+        )
     }
 
     fun favoriteButtonToggle(character: CharacterEntity) {
@@ -29,8 +34,11 @@ class CharacterDetailViewModel @Inject constructor(private val characterRepo: Ch
             favoriteDisposable!!.dispose()
         }
 
-        favoriteDisposable = this.convertObservableToLiveData(favoriteDisposable, favoriteLiveData
-                , characterRepo.setCharacterFavoriteStatus(character, !character.isFavorite))
+        favoriteDisposable = this.convertObservableToLiveData(
+                favoriteDisposable
+                , favoriteLiveData
+                , characterRepo.setCharacterFavoriteStatus(character.copy(), !character.isFavorite)
+        )
     }
 
 }

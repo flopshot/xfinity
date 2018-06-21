@@ -1,5 +1,6 @@
 package com.xfinity.ui.characterdetail
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -19,14 +20,13 @@ import com.xfinity.data.entities.CharacterEntity
 import com.xfinity.ui.navigation.NavActivityUIController
 import kotlinx.android.synthetic.main.fragment_character_detail.*
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class CharacterDetailFragment: Fragment(), Injectable {
 
-    private lateinit var characterDescription: String
-
-    private val viewModel: CharacterDetailViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(CharacterDetailViewModel::class.java)
-    }
+    private var viewModel: CharacterDetailViewModel by Delegates.notNull()
+    private var favoriteObserver: Observer<ApiResource<CharacterEntity>> by Delegates.notNull()
+    private var favoriteLiveData: LiveData<ApiResource<CharacterEntity>> by Delegates.notNull()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -38,52 +38,8 @@ class CharacterDetailFragment: Fragment(), Injectable {
     lateinit var appContext: Context
 
     private var character: CharacterEntity? = null
+    private lateinit var characterDescription: String
 
-    private val favoriteObserver: Observer<ApiResource<CharacterEntity>> = Observer { characterResource ->
-        if (characterResource != null) {
-            when (characterResource.status) {
-                Status.SUCCESS -> {
-                    navActivityUIController.hideLoadingBar()
-                    val msg: String
-                    if (characterResource.data != null) {
-                        msg = if (characterResource.data.isFavorite) {
-                            getString(R.string.character_fave_added)
-                        } else {
-                            getString(R.string.character_fave_removed)
-                        }
-                        navActivityUIController.snackBarMessage(msg)
-                    }
-                    viewModel.favoriteLiveData.removeObservers(this)
-                }
-                Status.ERROR -> {
-                    navActivityUIController.hideLoadingBar()
-                    val msg: String
-                    if (characterResource.data != null) {
-                        msg = if (characterResource.data.isFavorite) {
-                            getString(R.string.character_remove_error)
-                        } else {
-                            getString(R.string.character_add_error)
-                        }
-                        navActivityUIController.snackBarMessage(msg)
-                    }
-                    viewModel.favoriteLiveData.removeObservers(this)
-                }
-                Status.LOADING -> {
-                    navActivityUIController.showLoadingBar()
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        characterDescription = arguments?.getString(CHARACTER_DESCRIPTION_KEY)
-                ?: throw IllegalStateException("character id not found in fragment arguments")
-
-        viewModel.initCharacter(characterDescription)
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -118,10 +74,60 @@ class CharacterDetailFragment: Fragment(), Injectable {
             }
         })
 
-        favoriteButton.setOnClickListener { v ->
+        favoriteButton.setOnClickListener { _ ->
             if (character != null) {
-                viewModel.favoriteLiveData.observe(this, favoriteObserver)
-                viewModel.favoriteButtonToggle(character!!)
+                favoriteLiveData.observe(this@CharacterDetailFragment, favoriteObserver)
+                viewModel.favoriteButtonToggle(character!!.copy())
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        characterDescription = arguments?.getString(CHARACTER_DESCRIPTION_KEY)
+                ?: throw IllegalStateException("character id/description not found in fragment arguments")
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharacterDetailViewModel::class.java)
+
+        if (savedInstanceState == null) {
+            viewModel.initCharacter(characterDescription)
+        }
+
+        favoriteLiveData = viewModel.favoriteLiveData
+        favoriteObserver = Observer { characterResource ->
+            if (characterResource != null) {
+                when (characterResource.status) {
+                    Status.SUCCESS -> {
+                        navActivityUIController.hideLoadingBar()
+
+                        val msg: String
+
+                        if (characterResource.data != null) {
+                            msg = if (characterResource.data.isFavorite) {
+                                getString(R.string.character_fave_added)
+                            } else {
+                                getString(R.string.character_fave_removed)
+                            }
+                            navActivityUIController.snackBarMessage(msg)
+                        }
+                    }
+                    Status.ERROR -> {
+                        navActivityUIController.hideLoadingBar()
+                        val msg: String
+                        if (characterResource.data != null) {
+                            msg = if (characterResource.data.isFavorite) {
+                                getString(R.string.character_remove_error)
+                            } else {
+                                getString(R.string.character_add_error)
+                            }
+                            navActivityUIController.snackBarMessage(msg)
+                        }
+                    }
+                    Status.LOADING -> {
+                        navActivityUIController.showLoadingBar()
+                    }
+                }
             }
         }
     }
