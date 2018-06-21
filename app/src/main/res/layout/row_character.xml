@@ -27,4 +27,17 @@
         android:layout_marginStart="16dp"
         tools:text="Apu Nahasapeemapetilon"/>
 
+    <ImageView
+        android:id="@+id/favorite_icon"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        app:layout_constraintStart_toEndOf="@id/character_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        app:srcCompat="@drawable/ic_star_accent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:contentDescription="@string/this_character_is_a_favorite" />
+
 </android.support.constraint.ConstraintLayout>

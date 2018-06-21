@@ -35,7 +35,7 @@ class NavActivityUIController @Inject constructor(private val activity: Navigati
     }
 
     fun snackBarMessage(msg: String) {
-        Snackbar.make(activity.coordinatorLayout, msg, Snackbar.LENGTH_SHORT)
+        Snackbar.make(activity.coordinatorLayout, msg, Snackbar.LENGTH_SHORT).show()
     }
 
     fun showLoadingBar() {

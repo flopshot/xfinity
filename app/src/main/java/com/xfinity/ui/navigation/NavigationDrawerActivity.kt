@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.xfinity.R
 import com.xfinity.dagger.Injectable
+import com.xfinity.repository.CharacterRepository
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -52,9 +53,10 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_all_characters -> {
+                navigationController.getListFragment(CharacterRepository.FILTER_TYPE_NONE)
             }
             R.id.menu_favorites -> {
-
+                navigationController.getListFragment(CharacterRepository.FILTER_TYPE_FAVORITES)
             }
         }
 

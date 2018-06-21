@@ -10,6 +10,9 @@ interface CharacterDao {
     @Query("SELECT * FROM CharacterEntity")
     fun getCharactersFlowable(): Flowable<List<CharacterEntity>>
 
+    @Query("SELECT * FROM CharacterEntity WHERE isFavorite = 1")
+    fun getFavoriteCharactersFlowable(): Flowable<List<CharacterEntity>>
+
     @Query("SELECT * FROM CharacterEntity WHERE description = :description")
     fun getCharacterFlowable(description: String): Flowable<CharacterEntity>
 

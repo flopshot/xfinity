@@ -33,9 +33,13 @@ class CharacterListFragment: Fragment(), Injectable {
     @Inject
     lateinit var characterListAdapter: CharacterListAdapter
 
+    lateinit var filterType: String
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
             = inflater.inflate(R.layout.fragment_character_list, container, false)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -78,10 +82,24 @@ class CharacterListFragment: Fragment(), Injectable {
         })
     }
 
-    companion object {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        operator fun invoke(): CharacterDetailFragment {
+        filterType = arguments?.getString(CharacterListFragment.FILTER_KEY)
+                ?: throw IllegalStateException("No Filter Type Specified")
+
+        viewModel.initCharacters(filterType)
+    }
+
+    companion object {
+        const val FILTER_KEY = "filterKey"
+
+        operator fun invoke(filterType: String): CharacterDetailFragment {
             val f = CharacterDetailFragment()
+
+            val bundle = Bundle()
+            bundle.putString(CharacterListFragment.FILTER_KEY, filterType)
+            f.arguments = bundle
 
             return f
         }

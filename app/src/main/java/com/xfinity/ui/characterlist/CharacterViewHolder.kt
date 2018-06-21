@@ -14,6 +14,7 @@ class CharacterViewHolder(override val containerView: View): RecyclerView.ViewHo
 
     fun bind(character: CharacterEntity, picasso: Picasso) {
         character_name.text = character.name
+
         if (character.pictureUrl.trim() == "") {
             character_picture.setImageDrawable(ContextCompat.getDrawable(containerView.context, R.drawable.placeholder))
         } else{
@@ -23,6 +24,12 @@ class CharacterViewHolder(override val containerView: View): RecyclerView.ViewHo
                     .resize(200,200)
                     .placeholder(R.drawable.placeholder)
                     .into(character_picture)
+        }
+
+        if (character.isFavorite) {
+            favorite_icon.visibility = View.VISIBLE
+        } else {
+            favorite_icon.visibility = View.GONE
         }
     }
 }

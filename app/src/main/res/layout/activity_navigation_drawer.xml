@@ -54,7 +54,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:focusable="true"
-            tools:src="@android:drawable/ic_menu_search"
+            app:srcCompat="@drawable/ic_search"
             app:layout_anchor="@id/fragment_container"
             app:layout_anchorGravity="bottom|right|end"/>
 

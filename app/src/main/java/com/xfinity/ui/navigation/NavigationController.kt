@@ -18,8 +18,8 @@ class NavigationController @Inject constructor(private val activity: NavigationD
         navigateToFragment(characterDetailFragment)
     }
 
-    fun getListFragment() {
-        val characterListFragment = CharacterListFragment()
+    fun getListFragment(filterType: String = "") {
+        val characterListFragment = CharacterListFragment(filterType)
         navigateToFragment(characterListFragment)
     }
 
@@ -40,7 +40,7 @@ class NavigationController @Inject constructor(private val activity: NavigationD
                                 R.anim.slide_out_left,
                                 android.R.anim.slide_in_left,
                                 android.R.anim.slide_out_right)
-                        .replace(R.id.fragment_container, fragment)
+                        .replace(R.id.fragment_container_1, fragment)
                         .addToBackStack(null)
                         .commit()
             } else if (fragment is CharacterDetailFragment) {
@@ -56,7 +56,7 @@ class NavigationController @Inject constructor(private val activity: NavigationD
         }
     }
 
-    public fun navigateToFirstCharacterInDetailFragment(description: String) {
+    fun navigateToFirstCharacterInDetailFragment(description: String) {
         if (isTablet) {
             getDetailFragment(description)
         }

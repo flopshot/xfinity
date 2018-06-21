@@ -12,7 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.xfinity.R
+import com.xfinity.api.ApiResource
+import com.xfinity.api.Status
 import com.xfinity.dagger.Injectable
+import com.xfinity.data.entities.CharacterEntity
 import com.xfinity.ui.navigation.NavActivityUIController
 import kotlinx.android.synthetic.main.fragment_character_detail.*
 import javax.inject.Inject
@@ -34,6 +37,44 @@ class CharacterDetailFragment: Fragment(), Injectable {
     @Inject
     lateinit var appContext: Context
 
+    private var character: CharacterEntity? = null
+
+    private val favoriteObserver: Observer<ApiResource<CharacterEntity>> = Observer { characterResource ->
+        if (characterResource != null) {
+            when (characterResource.status) {
+                Status.SUCCESS -> {
+                    navActivityUIController.hideLoadingBar()
+                    val msg: String
+                    if (characterResource.data != null) {
+                        msg = if (characterResource.data.isFavorite) {
+                            getString(R.string.character_fave_added)
+                        } else {
+                            getString(R.string.character_fave_removed)
+                        }
+                        navActivityUIController.snackBarMessage(msg)
+                    }
+                    viewModel.favoriteLiveData.removeObservers(this)
+                }
+                Status.ERROR -> {
+                    navActivityUIController.hideLoadingBar()
+                    val msg: String
+                    if (characterResource.data != null) {
+                        msg = if (characterResource.data.isFavorite) {
+                            getString(R.string.character_remove_error)
+                        } else {
+                            getString(R.string.character_add_error)
+                        }
+                        navActivityUIController.snackBarMessage(msg)
+                    }
+                    viewModel.favoriteLiveData.removeObservers(this)
+                }
+                Status.LOADING -> {
+                    navActivityUIController.showLoadingBar()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,6 +93,8 @@ class CharacterDetailFragment: Fragment(), Injectable {
 
         viewModel.characterLiveData.observe(this, Observer { character ->
             if (character != null) {
+                this.character = character
+
                 if (character.pictureUrl.isEmpty()) {
                     character_picture.setImageDrawable(ContextCompat.getDrawable(appContext, R.drawable.placeholder))
                 } else {
@@ -66,9 +109,21 @@ class CharacterDetailFragment: Fragment(), Injectable {
                 character_description.text = character.description
 
                 navActivityUIController.setActionBarTitle(character.name, this)
+
+                if (character.isFavorite) {
+                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(appContext, R.drawable.ic_star_accent))
+                } else {
+                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(appContext, R.drawable.ic_star_hollow))
+                }
             }
         })
 
+        favoriteButton.setOnClickListener { v ->
+            if (character != null) {
+                viewModel.favoriteLiveData.observe(this, favoriteObserver)
+                viewModel.favoriteButtonToggle(character!!)
+            }
+        }
     }
 
     companion object {

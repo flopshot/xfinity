@@ -1,5 +1,6 @@
 package com.xfinity.repository
 
+import android.os.AsyncTask
 import com.xfinity.api.ApiResource
 import com.xfinity.api.CharacterViewerApi
 import com.xfinity.api.apiresponses.CharactersResponse
@@ -13,12 +14,18 @@ import javax.inject.Singleton
 @Singleton
 class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val appDatabase: AppDatabase) {
 
-    fun getCharactersObservable(): Observable<ApiResource<List<CharacterEntity>>>  {
+    fun getCharactersObservable(filterType: String): Observable<ApiResource<List<CharacterEntity>>>  {
 
         return object: BaseNetworkResource<CharactersResponse, List<CharacterEntity>>(appDatabase) {
 
             override fun createCall(): Observable<CharactersResponse> = api.getCharacterList()
-            override fun loadFromDb(): Flowable<List<CharacterEntity>> = appDatabase.characterDao().getCharactersFlowable()
+            override fun loadFromDb(): Flowable<List<CharacterEntity>> {
+                return when (filterType) {
+                    FILTER_TYPE_NONE -> appDatabase.characterDao().getCharactersFlowable()
+                    FILTER_TYPE_FAVORITES -> appDatabase.characterDao().getFavoriteCharactersFlowable()
+                    else -> appDatabase.characterDao().getCharactersFlowable()
+                }
+            }
             override fun shouldFetch(): Boolean = true
 
         }.asObservable()
@@ -27,8 +34,16 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
     fun getCharacterObservable(id: String): Observable<CharacterEntity>
             = appDatabase.characterDao().getCharacterFlowable(id).toObservable()
 
-    fun setCharacterFavoriteStatus(character: CharacterEntity, favorite: Boolean) {
+    fun setCharacterFavoriteStatus(character: CharacterEntity, favorite: Boolean): Observable<ApiResource<CharacterEntity>> {
         character.isFavorite = favorite
-        appDatabase.characterDao().update(character)
+        AsyncTask.execute({
+            appDatabase.characterDao().update(character)
+        })
+        return Observable.just(ApiResource.success(character))
+    }
+
+    companion object {
+        val FILTER_TYPE_NONE = "no filter on character list"
+        val FILTER_TYPE_FAVORITES = "filter on favorite characters"
     }
 }
