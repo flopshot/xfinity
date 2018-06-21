@@ -1,24 +1,27 @@
 package com.xfinity.dagger.components
 
+import android.app.Application
 import com.xfinity.CharacterViewerApplication
-import com.xfinity.api.NetworkModule
+import com.xfinity.api.ApiModule
 import com.xfinity.dagger.modules.ActivityBuilderModule
 import com.xfinity.dagger.modules.ApplicationModule
-import com.xfinity.dagger.modules.NDFragmentBuilderModule
 import com.xfinity.data.DatabaseModule
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
+
+
 @Singleton
-@Component(modules = [ApplicationModule::class, ActivityBuilderModule::class,
-    NDFragmentBuilderModule::class, NetworkModule::class, DatabaseModule::class])
+@Component(modules = [ApplicationModule::class, ActivityBuilderModule::class, ApiModule::class,
+                      AndroidSupportInjectionModule::class, DatabaseModule::class])
 interface ApplicationComponent {
 
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun application(application: CharacterViewerApplication): Builder
+        fun application(application: Application): Builder
 
         fun build(): ApplicationComponent
     }

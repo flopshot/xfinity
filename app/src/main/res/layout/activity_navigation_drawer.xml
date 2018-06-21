@@ -32,6 +32,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <include
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?actionBarSize"

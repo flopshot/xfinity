@@ -1,8 +1,9 @@
 package com.xfinity.api
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
-import com.xfinity.CharacterViewerApplication
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -12,6 +13,8 @@ import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
+
 
 @Module
 class NetworkModule {
@@ -27,7 +30,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun getCacheFile(context: CharacterViewerApplication): File {
+    fun getCacheFile(context: Context): File {
         return File(context.getCacheDir(), "okhttp-cache")
     }
 
@@ -36,6 +39,10 @@ class NetworkModule {
     fun getOkHttpCache(cacheFile: File): Cache {
         return Cache(cacheFile, 10 * 1000 * 1000)
     }
+
+    @Singleton
+    @Provides
+    fun gson(): Gson = GsonBuilder().create()
 
     @Singleton
     @Provides
