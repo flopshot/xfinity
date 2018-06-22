@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
-    android:padding="16dp">
+    android:paddingBottom="8dp"
+    >
 
     <ImageView
         android:id="@+id/character_picture"
@@ -23,7 +24,7 @@
         android:id="@+id/character_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/character_picture"
+        app:layout_constraintStart_toEndOf="@+id/character_picture"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/favorite_icon"
@@ -32,20 +33,22 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:gravity="start|center_vertical"
         tools:text="Apu Nahasapeemapetilon"
         tools:ignore="RtlSymmetry" />
 
     <ImageView
         android:id="@+id/favorite_icon"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/ic_star_accent"
         android:visibility="gone"
         tools:visibility="visible"
-        android:contentDescription="@string/this_character_is_a_favorite" />
+        android:contentDescription="@string/this_character_is_a_favorite"
+        android:layout_marginEnd="@dimen/row_character_end_margin"/>
 
 </android.support.constraint.ConstraintLayout>

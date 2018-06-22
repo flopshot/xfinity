@@ -20,7 +20,7 @@ class NavActivityUIController @Inject constructor(private val activity: Navigati
 
     private var curTextWatcher: TextWatcher? = null
 
-    private val isTablet: Boolean by lazy {
+    val isTablet: Boolean by lazy {
         activity.resources.configuration.smallestScreenWidthDp >= Constants.TABLET_SMALLEST_WIDTH
     }
 
@@ -82,4 +82,5 @@ class NavActivityUIController @Inject constructor(private val activity: Navigati
         activity.searchBar.visibility = View.GONE
         activity.toolbar.menu.findItem(menu_search).setIcon(R.drawable.ic_search)
     }
+
 }

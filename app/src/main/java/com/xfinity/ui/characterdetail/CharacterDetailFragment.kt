@@ -58,8 +58,8 @@ class CharacterDetailFragment: Fragment(), Injectable {
                 } else {
                     character_picture.setImageDrawable(null)
                     picasso.load(character.pictureUrl)
-                            .centerInside()
-                            .resize(500,500)
+                            .fit()
+                            .centerCrop()
                             .placeholder(R.drawable.placeholder)
                             .into(character_picture)
                 }

@@ -7,10 +7,12 @@ import com.squareup.picasso.Picasso
 import com.xfinity.R
 import com.xfinity.data.entities.CharacterEntity
 import com.xfinity.ui.clickhandlers.CharacterIdClickListener
+import com.xfinity.ui.navigation.NavActivityUIController
 import com.xfinity.ui.util.AsyncDiffUtilAdapter
 import javax.inject.Inject
 
-class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
+class CharacterListAdapter @Inject constructor(private val picasso: Picasso,
+                                               private val activityUIController: NavActivityUIController)
     : AsyncDiffUtilAdapter<CharacterViewHolder, CharacterEntity>() {
 
     private var characterList: ArrayList<CharacterEntity> = arrayListOf()
@@ -32,8 +34,8 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
         holder.bind(characterList[position], picasso, position == selectedPosition)
 
         if (characterClickListener != null) {
-            holder.itemView.setOnClickListener({ v ->
-                if (position != selectedPosition) {
+            holder.itemView.setOnClickListener({ _ ->
+                if (position != selectedPosition || !activityUIController.isTablet) {
                     characterClickListener!!.onClick(characterList[position].description)
                     val oldPosition = selectedPosition
                     selectedPosition = position

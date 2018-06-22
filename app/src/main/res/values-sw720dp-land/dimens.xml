@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="row_character_end_margin">10dp</dimen>
+</resources>
