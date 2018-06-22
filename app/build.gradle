@@ -62,8 +62,6 @@ android {
     }
 }
 
-
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
@@ -98,12 +96,20 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.5.1'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:3.8'
-    testImplementation 'org.mockito:mockito-core:2.9.0'
     testImplementation 'com.android.support.test:runner:1.0.2'
+
+    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.mockito:mockito-core:2.13.0'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
+
+    testImplementation 'org.powermock:powermock-core:2.0.0-beta.5'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.0-beta.5'
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.0-beta.5'
+
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

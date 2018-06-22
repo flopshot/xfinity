@@ -6,12 +6,14 @@ import com.xfinity.data.AppDatabase
 
 class CharactersResponse(
         @SerializedName("RelatedTopics") val characters: List<CharacterResponse>
-) : BaseResponse {
+): BaseResponse {
 
     @WorkerThread
-    override fun saveResponseToDb(db: AppDatabase) {
+    override fun saveResponseToDb(db: AppDatabase): Long {
+        var saveCount = 0L
         for (character in characters) {
-            character.saveResponseToDb(db)
+            saveCount += character.saveResponseToDb(db)
         }
+        return saveCount
     }
 }

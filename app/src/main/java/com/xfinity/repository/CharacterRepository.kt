@@ -26,7 +26,7 @@ class CharacterRepository @Inject constructor(val api: CharacterViewerApi, val a
                     FILTER_TYPE_FAVORITES -> appDatabase.characterDao().getFavoriteCharactersFlowable()
                     FILTER_TYPE_SEARCH -> {
                         if (searchQuery.isEmpty()) throw IllegalArgumentException("Character name search query cannot be empty")
-                        appDatabase.characterDao().getSerachCharactersFlowable(searchQuery)
+                        appDatabase.characterDao().getSearchCharactersFlowable(searchQuery)
                     }
                     else -> appDatabase.characterDao().getCharactersFlowable()
                 }
