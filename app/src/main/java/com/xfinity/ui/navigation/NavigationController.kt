@@ -32,11 +32,13 @@ class NavigationController @Inject constructor(private val activity: NavigationD
         if (!isTablet) {
 
             fragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right,
-                            R.anim.slide_out_left,
-                            android.R.anim.slide_in_left,
-                            android.R.anim.slide_out_right)
-                    .replace(R.id.fragment_container, fragment)
+
+            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right,
+                    android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right)
+
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
 
             fragmentTransaction.addToBackStack(filterTypeFromCharacterListFrag)
 
@@ -45,11 +47,13 @@ class NavigationController @Inject constructor(private val activity: NavigationD
             if (fragment is CharacterListFragment) {
 
                 fragmentTransaction = activity.supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right,
-                                R.anim.slide_out_left,
-                                android.R.anim.slide_in_left,
-                                android.R.anim.slide_out_right)
-                        .replace(R.id.fragment_container_1, fragment)
+
+                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right)
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment)
 
                 fragmentTransaction.addToBackStack(filterTypeFromCharacterListFrag)
 
@@ -57,12 +61,12 @@ class NavigationController @Inject constructor(private val activity: NavigationD
 
             } else if (fragment is CharacterDetailFragment) {
                 activity.supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right,
-                                R.anim.slide_out_left,
-                                android.R.anim.slide_in_left,
-                                android.R.anim.slide_out_right)
+                        .setCustomAnimations(
+                                android.R.anim.fade_in,
+                                android.R.anim.fade_out,
+                                android.R.anim.fade_in,
+                                android.R.anim.fade_out)
                         .replace(R.id.fragment_container_2, fragment)
-//                        .addToBackStack(filterTypeFromCharacterListFrag)
                         .commit()
             }
         }
@@ -96,7 +100,7 @@ class NavigationController @Inject constructor(private val activity: NavigationD
                 }
 
                 else -> {
-                    navigateToFragment(CharacterListFragment(CharacterRepository.FILTER_TYPE_NONE))
+                    getListFragment(CharacterRepository.FILTER_TYPE_NONE)
                     callSuper = false
                 }
             }

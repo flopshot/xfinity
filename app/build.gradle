@@ -7,6 +7,10 @@ ext.support_version = '27.1.1'
 ext.dagger_version = '2.13'
 
 android {
+    signingConfigs {
+        config {
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.xfinity"
@@ -17,19 +21,24 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-
     androidExtensions {
         experimental = true
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"https://api.duckduckgo.com/\""
+            signingConfig signingConfigs.config
         }
         debug {
             buildConfigField "String", "BASE_URL", "\"https://api.duckduckgo.com/\""
+        }
+    }
+
+    signingConfigs {
+        config {
+            readKeystoreProperties()
         }
     }
 
@@ -56,18 +65,19 @@ android {
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:support-core-ui:$support_version"
     implementation "com.android.support:support-fragment:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
-    implementation "com.android.support.constraint:constraint-layout:1.1.2"
 
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation "android.arch.persistence.room:runtime:1.1.0"
-    implementation "android.arch.persistence.room:rxjava2:1.1.0"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.persistence.room:runtime:1.1.0'
+    implementation 'android.arch.persistence.room:rxjava2:1.1.0'
     kapt "android.arch.persistence.room:compiler:1.1.0"
 
     implementation "com.google.dagger:dagger:$dagger_version"
@@ -75,27 +85,41 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
-    implementation "com.squareup.okhttp3:okhttp:3.10.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation "io.reactivex.rxjava2:rxjava:2.1.12"
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
 
-    implementation "com.jakewharton.timber:timber:4.5.1"
+    implementation 'com.jakewharton.timber:timber:4.5.1'
 
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.robolectric:robolectric:3.8"
-    testImplementation "org.mockito:mockito-core:2.9.0"
-    testImplementation "com.android.support.test:runner:1.0.2"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.mockito:mockito-core:2.9.0'
+    testImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+def readKeystoreProperties() {
+    def propsFile = rootProject.file('keystore.properties')
+    def configName = 'config'
+    if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        android.signingConfigs[configName].storeFile = file(props['storeFile'])
+        android.signingConfigs[configName].storePassword = props['storePassword']
+        android.signingConfigs[configName].keyAlias = props['keyAlias']
+        android.signingConfigs[configName].keyPassword = props['keyPassword']
+    }
+}
+
 repositories {
     mavenCentral()
 }

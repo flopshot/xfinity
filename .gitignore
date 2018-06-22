@@ -64,6 +64,6 @@ androidutil/
 
 #Sensitive Info
 map_api_key.xml
-*.jks
+##*.jks
 captures/
-keystore.properties
+##keystore.properties
