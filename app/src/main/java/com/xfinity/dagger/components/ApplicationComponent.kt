@@ -1,7 +1,7 @@
 package com.xfinity.dagger.components
 
 import android.app.Application
-import com.xfinity.CharacterViewerApplication
+import com.xfinity.CharacterApplication
 import com.xfinity.api.ApiModule
 import com.xfinity.dagger.modules.ActivityBuilderModule
 import com.xfinity.dagger.modules.ApplicationModule
@@ -25,5 +25,5 @@ interface ApplicationComponent {
         fun build(): ApplicationComponent
     }
 
-    fun injectApplicationComponent(application: CharacterViewerApplication)
+    fun injectApplicationComponent(application: CharacterApplication)
 }

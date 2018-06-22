@@ -51,6 +51,7 @@ class CharacterListFragment: Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         characterRecyclerView.adapter = characterListAdapter
+        characterListAdapter.selectedPosition = savedInstanceState?.getInt(SELECTED_ITEM_KEY)?:0
 
         characterListAdapter.setCharacterClickListener(object : CharacterIdClickListener {
             override fun onClick(description: String) {
@@ -88,7 +89,7 @@ class CharacterListFragment: Fragment(), Injectable {
 
         viewModel.charactersLiveData.observe(this, Observer { charactersResource ->
             if (charactersResource != null) {
-                if (firstCharacter == null && charactersResource.data != null) {
+                if (firstCharacter == null && charactersResource.data != null && savedInstanceState == null) {
                     if (charactersResource.data.isNotEmpty()) {
                         firstCharacter = charactersResource.data[0].description
                         navigationController.navigateToFirstCharacterInDetailFragment(charactersResource.data[0].description)
@@ -96,6 +97,8 @@ class CharacterListFragment: Fragment(), Injectable {
                         navigationController.navigateToFirstCharacterInDetailFragment(null)
                     }
                 }
+
+
                 when (charactersResource.status) {
                     Status.LOADING -> {
                         navActivityUIController.showLoadingBar()
@@ -132,9 +135,15 @@ class CharacterListFragment: Fragment(), Injectable {
         navActivityUIController.setActionBarTitle(title, CharacterListFragment.TAG)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(SELECTED_ITEM_KEY, characterListAdapter.selectedPosition)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
         const val FILTER_KEY = "filterKey"
         const val SEARCH_QUERY_KEY = "searchquerykey"
+        private const val SELECTED_ITEM_KEY = "selectedItemKey"
 
         const val TAG = "CharacterListFragment"
 

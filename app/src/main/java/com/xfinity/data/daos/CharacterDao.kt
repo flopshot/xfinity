@@ -7,16 +7,16 @@ import io.reactivex.Flowable
 @Dao
 interface CharacterDao {
 
-    @Query("SELECT * FROM CharacterEntity")
+    @Query("SELECT * FROM CharacterEntity ORDER BY name")
     fun getCharactersFlowable(): Flowable<List<CharacterEntity>>
 
-    @Query("SELECT * FROM CharacterEntity WHERE isFavorite = 1")
+    @Query("SELECT * FROM CharacterEntity WHERE isFavorite = 1 ORDER BY name")
     fun getFavoriteCharactersFlowable(): Flowable<List<CharacterEntity>>
 
     @Query("SELECT * FROM CharacterEntity WHERE description = :description")
     fun getCharacterFlowable(description: String): Flowable<CharacterEntity>
 
-    @Query("SELECT * FROM CharacterEntity WHERE name LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM CharacterEntity WHERE name LIKE '%' || :query || '%' ORDER BY name")
     fun getSerachCharactersFlowable(query: String): Flowable<List<CharacterEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

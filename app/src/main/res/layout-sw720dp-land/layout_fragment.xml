@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -21,14 +22,22 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.4"/>
 
-    <FrameLayout
-        android:id="@+id/fragment_container_2"
+    <android.support.v7.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/guidelineDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:cardCornerRadius="2dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        android:padding="8dp"
+        >
+        <FrameLayout
+            android:id="@+id/fragment_container_2"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>

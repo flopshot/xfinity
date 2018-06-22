@@ -25,7 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="This is a character"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:textSize="19sp"/>
 
     <ImageButton
         android:id="@+id/favoriteButton"

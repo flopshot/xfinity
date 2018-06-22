@@ -15,6 +15,7 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
 
     private var characterList: ArrayList<CharacterEntity> = arrayListOf()
     private var characterClickListener: CharacterIdClickListener? = null
+    var selectedPosition: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder
             = CharacterViewHolder (
@@ -28,10 +29,17 @@ class CharacterListAdapter @Inject constructor(private val picasso: Picasso)
     }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        holder.bind(characterList[position], picasso)
+        holder.bind(characterList[position], picasso, position == selectedPosition)
+
         if (characterClickListener != null) {
             holder.itemView.setOnClickListener({ v ->
-                characterClickListener!!.onClick(characterList[position].description)
+                if (position != selectedPosition) {
+                    characterClickListener!!.onClick(characterList[position].description)
+                    val oldPosition = selectedPosition
+                    selectedPosition = position
+                    notifyItemChanged(oldPosition)
+                    notifyItemChanged(selectedPosition)
+                }
             })
         }
     }

@@ -10,7 +10,7 @@ import dagger.android.HasActivityInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class CharacterViewerApplication: Application(), HasActivityInjector {
+class CharacterApplication: Application(), HasActivityInjector {
 
     @Inject
     lateinit var dispatchingAndroidInjector : DispatchingAndroidInjector<Activity>

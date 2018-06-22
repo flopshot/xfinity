@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
-import com.xfinity.CharacterViewerApplication
+import com.xfinity.CharacterApplication
 import com.xfinity.dagger.components.DaggerApplicationComponent
 import com.xfinity.ui.navigation.NavigationDrawerActivity
 import dagger.android.AndroidInjection
@@ -17,7 +17,7 @@ import dagger.android.support.AndroidSupportInjection
 
 object ComponentInjector {
 
-    fun initInjection(app: CharacterViewerApplication) {
+    fun initInjection(app: CharacterApplication) {
 
         DaggerApplicationComponent.builder().application(app).build().injectApplicationComponent(app)
 

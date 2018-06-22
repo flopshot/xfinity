@@ -17,7 +17,7 @@ data class CharacterResponse(
         val endIndex = description.indexOf(" -", 0)
 
         name = if (endIndex == -1) {
-            "(No Name)"
+            "No Name"
         } else {
             description.substring(0, endIndex)
         }

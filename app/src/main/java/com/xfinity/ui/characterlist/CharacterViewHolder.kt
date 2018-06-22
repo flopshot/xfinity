@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.row_character.*
 class CharacterViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView),
     LayoutContainer {
 
-    fun bind(character: CharacterEntity, picasso: Picasso) {
+    fun bind(character: CharacterEntity, picasso: Picasso, isSelected: Boolean) {
         character_name.text = character.name
 
         if (character.pictureUrl.trim() == "") {
@@ -30,6 +30,12 @@ class CharacterViewHolder(override val containerView: View): RecyclerView.ViewHo
             favorite_icon.visibility = View.VISIBLE
         } else {
             favorite_icon.visibility = View.GONE
+        }
+
+        if (isSelected) {
+            row_container.setBackgroundColor(ContextCompat.getColor(containerView.context, R.color.selected_character_row))
+        } else {
+            row_container.setBackgroundColor(ContextCompat.getColor(containerView.context, android.R.color.transparent))
         }
     }
 }
