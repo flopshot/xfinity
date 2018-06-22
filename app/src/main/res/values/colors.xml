@@ -5,5 +5,6 @@
     <color name="colorAccent">#FFD90F</color>
 
     <color name="selected_character_row">@android:color/transparent</color>
-
+    <color name="colorPrimaryText">#FFFFFF</color>
+    <color name="colorAccentText">#FFFFFF</color>
 </resources>

@@ -48,12 +48,13 @@ class NavigationController @Inject constructor(private val activity: NavigationD
 
                 fragmentTransaction = activity.supportFragmentManager.beginTransaction()
 
-                fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,
+                fragmentTransaction.setCustomAnimations(
+                        android.R.anim.slide_in_left,
                         android.R.anim.slide_out_right,
                         android.R.anim.slide_in_left,
                         android.R.anim.slide_out_right)
 
-                fragmentTransaction.replace(R.id.fragment_container, fragment)
+                fragmentTransaction.replace(R.id.fragment_container_1, fragment)
 
                 fragmentTransaction.addToBackStack(filterTypeFromCharacterListFrag)
 
@@ -62,10 +63,10 @@ class NavigationController @Inject constructor(private val activity: NavigationD
             } else if (fragment is CharacterDetailFragment) {
                 activity.supportFragmentManager.beginTransaction()
                         .setCustomAnimations(
-                                android.R.anim.fade_in,
-                                android.R.anim.fade_out,
-                                android.R.anim.fade_in,
-                                android.R.anim.fade_out)
+                                android.R.anim.slide_in_left,
+                                android.R.anim.slide_out_right,
+                                android.R.anim.slide_in_left,
+                                android.R.anim.slide_out_right)
                         .replace(R.id.fragment_container_2, fragment)
                         .commit()
             }

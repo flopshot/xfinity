@@ -15,7 +15,7 @@
     <string name="character_remove_error">Sorry Couldn\'t Remove Character From Favorites</string>
     <string name="character_add_error">Sorry Couldn\'t Add Character To Favorites</string>
     <string name="search_field_empty">Search Field Is Empty</string>
-    <string name="search_for_a_character_by_name">Search For a Character By Name</string>
+    <string name="search_for_characters">Search For Characters</string>
     <string name="search">Search</string>
     <string name="all_characters">All Characters</string>
     <string name="favorites">Favorites</string>

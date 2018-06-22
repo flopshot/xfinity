@@ -1,5 +1,6 @@
 package com.xfinity.ui.navigation
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.xfinity.R
 import com.xfinity.dagger.Injectable
@@ -33,8 +35,6 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
     lateinit var navActivityUIController: NavActivityUIController
     @Inject
     lateinit var validation: Validation
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +91,10 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
                     searchBar.visibility = View.VISIBLE
                     searchBar.requestFocus()
                     item.setIcon(R.drawable.ic_cancel)
-                } else {
+                    val imm
+                            = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(searchBar, 0)                }
+                else {
                     searchBar.text.clear()
                     navActivityUIController.clearSearchBarFocus()
                 }
