@@ -3,6 +3,7 @@ package com.xfinity.ui.characterlist
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import com.xfinity.R
 import com.xfinity.api.Status
 import com.xfinity.dagger.Injectable
+import com.xfinity.repository.CharacterRepository
 import com.xfinity.repository.CharacterRepository.Companion.FILTER_TYPE_SEARCH
 import com.xfinity.ui.clickhandlers.CharacterIdClickListener
 import com.xfinity.ui.navigation.NavActivityUIController
@@ -32,10 +34,14 @@ class CharacterListFragment: Fragment(), Injectable {
     lateinit var navigationController: NavigationController
     @Inject
     lateinit var characterListAdapter: CharacterListAdapter
+    @Inject
+    lateinit var appCxt: Context
 
     lateinit var filterType: String
     lateinit var searchQuery: String
+    lateinit var title: String
 
+    private var firstCharacter: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -45,8 +51,6 @@ class CharacterListFragment: Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         characterRecyclerView.adapter = characterListAdapter
-
-        navActivityUIController.setActionBarTitle(fragment = this)
 
         characterListAdapter.setCharacterClickListener(object : CharacterIdClickListener {
             override fun onClick(description: String) {
@@ -59,12 +63,39 @@ class CharacterListFragment: Fragment(), Injectable {
         super.onCreate(savedInstanceState)
 
         filterType = arguments?.getString(CharacterListFragment.FILTER_KEY)
-                ?: throw IllegalStateException("No Filter Type Specified")
+                                ?: throw IllegalStateException("No Filter Type Specified")
 
         searchQuery = arguments?.getString(SEARCH_QUERY_KEY, "")?:""
 
+        when (filterType) {
+
+            CharacterRepository.FILTER_TYPE_NONE -> {
+                title = appCxt.getString(R.string.character_list_fragment_title)
+            }
+
+            CharacterRepository.FILTER_TYPE_SEARCH -> {
+                title = "${appCxt.getString(R.string.character_list_fragment_title_srch)} \"$searchQuery\""
+            }
+
+            CharacterRepository.FILTER_TYPE_FAVORITES -> {
+                title = appCxt.getString(R.string.character_list_fragment_title_faves)
+            }
+
+            else -> {
+                title = appCxt.getString(R.string.character_list_fragment_title)
+            }
+        }
+
         viewModel.charactersLiveData.observe(this, Observer { charactersResource ->
             if (charactersResource != null) {
+                if (firstCharacter == null && charactersResource.data != null) {
+                    if (charactersResource.data.isNotEmpty()) {
+                        firstCharacter = charactersResource.data[0].description
+                        navigationController.navigateToFirstCharacterInDetailFragment(charactersResource.data[0].description)
+                    } else {
+                        navigationController.navigateToFirstCharacterInDetailFragment(null)
+                    }
+                }
                 when (charactersResource.status) {
                     Status.LOADING -> {
                         navActivityUIController.showLoadingBar()
@@ -96,11 +127,18 @@ class CharacterListFragment: Fragment(), Injectable {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        navActivityUIController.setActionBarTitle(title, CharacterListFragment.TAG)
+    }
+
     companion object {
         const val FILTER_KEY = "filterKey"
         const val SEARCH_QUERY_KEY = "searchquerykey"
 
-        operator fun invoke(filterType: String, searchQuery: String): CharacterListFragment {
+        const val TAG = "CharacterListFragment"
+
+        operator fun invoke(filterType: String, searchQuery: String = ""): CharacterListFragment {
             val f = CharacterListFragment()
 
             val bundle = Bundle()

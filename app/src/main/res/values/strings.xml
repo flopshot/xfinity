@@ -19,4 +19,6 @@
     <string name="search">Search</string>
     <string name="all_characters">All Characters</string>
     <string name="favorites">Favorites</string>
+    <string name="character_list_fragment_title_srch">Searching Characters For</string>
+    <string name="character_list_fragment_title_faves">Favorite Characters</string>
 </resources>

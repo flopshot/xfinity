@@ -49,6 +49,8 @@ class CharacterDetailFragment: Fragment(), Injectable {
 
         viewModel.characterLiveData.observe(this, Observer { character ->
             if (character != null) {
+                navActivityUIController.setActionBarTitle(character.name, CharacterDetailFragment.TAG)
+
                 this.character = character
 
                 if (character.pictureUrl.isEmpty()) {
@@ -63,8 +65,6 @@ class CharacterDetailFragment: Fragment(), Injectable {
                 }
 
                 character_description.text = character.description
-
-                navActivityUIController.setActionBarTitle(character.name, this)
 
                 if (character.isFavorite) {
                     favoriteButton.setImageDrawable(ContextCompat.getDrawable(appContext, R.drawable.ic_star_accent))
@@ -134,6 +134,7 @@ class CharacterDetailFragment: Fragment(), Injectable {
 
     companion object {
         const val CHARACTER_DESCRIPTION_KEY = "characterId"
+        const val TAG = "CharacterDetailFragment"
 
         operator fun invoke(characterDescription: String): CharacterDetailFragment {
             val f = CharacterDetailFragment()

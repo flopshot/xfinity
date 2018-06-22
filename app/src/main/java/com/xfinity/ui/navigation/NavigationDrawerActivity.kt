@@ -49,7 +49,7 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
         nav_view.setNavigationItemSelectedListener(this)
 
         if (savedInstanceState == null) {
-            navigationController.getListFragment()
+            navigationController.getListFragment(CharacterRepository.FILTER_TYPE_NONE)
         } else {
             searchBar.visibility = savedInstanceState.getInt(SEARCH_FIELD_VISIBLE_KEY)
         }
@@ -64,6 +64,7 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
                     return@OnEditorActionListener false
                 }
 
+                navActivityUIController.clearSearchBarFocus()
                 navigationController.getListFragment(CharacterRepository.FILTER_TYPE_SEARCH, query)
 
                 return@OnEditorActionListener true
@@ -92,9 +93,7 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
                     item.setIcon(R.drawable.ic_cancel)
                 } else {
                     searchBar.text.clear()
-                    searchBar.visibility = View.GONE
-                    item.setIcon(R.drawable.ic_search)
-                    searchBar.clearFocus()
+                    navActivityUIController.clearSearchBarFocus()
                 }
             }
         }
@@ -104,8 +103,14 @@ class NavigationDrawerActivity : AppCompatActivity(), HasSupportFragmentInjector
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
+        } else if (searchBar.visibility == View.VISIBLE) {
+            searchBar.text.clear()
+            navActivityUIController.clearSearchBarFocus()
         } else {
-            super.onBackPressed()
+            val callSuper = navigationController.onBackPressedAndShouldCallSuper()
+            if (callSuper) {
+                super.onBackPressed()
+            }
         }
     }
 
