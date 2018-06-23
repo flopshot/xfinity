@@ -10,7 +10,14 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
-
+/**
+ * This class is implemented when a data needs to be fetched over the network.
+ * The class loads any cached data from the Database first with a Status of LOADING and then attempts
+ * the network all. If the network call succeeds with http response code 200 or fails with any other
+ * code, the Status will update to SUCCESS or FAIL, respectively. In either case, the reactive stream
+ * from the local data base is still maintained and the UI can respond to changes in the model, even
+ * if the network request failed.
+ */
 abstract class BaseNetworkResource<RawResult: BaseResponse, ResultType>
 @MainThread constructor(private val appDatabase: AppDatabase) {
 
